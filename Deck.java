@@ -1,64 +1,103 @@
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Random;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map.Entry;
 
 public class Deck {
-
-    private final String[] paloDeck = {"corazones", "diamantes", "trébol", "picas"};
-    private final String[] colorDeck = {"rojo", "negro"};
-    private final String[] valorDeck = { "2", "3", "4", "5", "6", "7", "8", "9", "10", "A", "J", "Q", "K"};
-
-    private ArrayList<Card> deck;
+    private HashMap<String, String> palos = new HashMap();
+    private ArrayList<Card> mazo = new ArrayList();
+    private String strFormat = "Queda %s";
+    int a;
 
     public Deck() {
-        deck = new ArrayList<Card>();
-
-        for (int palo = 0; palo < 2; palo++)
-            for (int valor = 0; valor < valorDeck.length; valor++)
-                deck.add(new Card(paloDeck[palo], colorDeck[0], valorDeck[valor]));
-
-        for (int palo = 2; palo < 4; palo++)
-            for (int valor = 0; valor < valorDeck.length; valor++)
-                deck.add(new Card(paloDeck[palo], colorDeck[1], valorDeck[valor]));
     }
 
-    public int getSize() {
-        return deck.size();
+    public ArrayList<Card> getMazo() {
+        return this.mazo;
     }
 
-    public ArrayList<Card> getDeck() {
-        return deck;
+    public void mazo() {
+        this.palos.put("Diamante", "rojo");
+        this.palos.put("Trebol", "Negro");
+        this.palos.put("Pica", "Negro");
+        this.palos.put("Corazon", "rojo");
     }
 
-    public void suflle() {
-        Collections.shuffle(deck);
-        System.out.println("Se mezcló el Deck.");
-        for (Object elemento : deck) {
-            System.out.print(elemento + " / ");
+    public void construir() {
+        this.mazo();
+        Iterator var1 = this.palos.entrySet().iterator();
+
+        while(var1.hasNext()) {
+            Entry<String, String> palo = (Entry)var1.next();
+            String paloCard = (String)palo.getKey();
+            String color = (String)palo.getValue();
+
+            for(int i = 1; i <= 13; ++i) {
+                Card card = new Card(paloCard, color);
+                card.setValor(i);
+                this.mazo.add(card);
+            }
+        }
+
+    }
+
+    public void barajear() {
+        Collections.shuffle(this.mazo);
+        System.out.println("Se mezclo el deck");
+    }
+
+    public void head() throws Exception {
+        Card card = (Card)this.mazo.get(this.mazo.size() - 1);
+        this.mazo.remove(card);
+        System.out.println(card.toString());
+        System.out.println(String.format(this.strFormat, this.mazo.size()));
+        this.a = this.mazo.size();
+        if (this.a == 0) {
+            throw new Exception("Se han agotado las cartas");
         }
     }
 
-    public void head(){
-        System.out.println(deck.get(0));
-        deck.remove(0);
-        System.out.println("Quedan " + deck.size() + " cartas");
+    private Card azar() {
+        int max = this.mazo.size() - 1;
+        int rd = (int)Math.floor(Math.random() * (double)(0 - max + 1) + (double)max);
+        return (Card)this.mazo.get(rd);
     }
 
-
-    public void pick() {
-        Random random = new Random();
-        System.out.println(deck.get(random.nextInt(deck.size())));
-        deck.remove(random.nextInt(deck.size()));
-        System.out.println("Quedan " + deck.size() + " cartas");
+    public Card pick() throws Exception {
+        Card card = this.azar();
+        this.mazo.remove(card);
+        System.out.println(card.toString());
+        System.out.println(String.format(this.strFormat, this.mazo.size()));
+        this.a = this.mazo.size();
+        if (this.a == 0) {
+            throw new Exception("Se han agotado las cartas");
+        } else {
+            return card;
+        }
     }
 
-    public void hand() {
-        for(int i=0; i<=4; i++){
-            System.out.println(deck.get(i));
+    private void printHand(ArrayList<Card> cards) {
+        Iterator var2 = cards.iterator();
+
+        while(var2.hasNext()) {
+            Card card = (Card)var2.next();
+            System.out.println(card.toString());
         }
-        for(int i=0; i<=4; i++){
-            deck.remove(i);
+
+    }
+
+    public void hand() throws Exception {
+        ArrayList<Card> cards = new ArrayList();
+        if (this.mazo.isEmpty()) {
+            throw new Exception("Se han agotado las cartas");
+        } else if (this.mazo.size() < 5) {
+            throw new Exception("Quedan pocas cartas");
+        } else {
+            for(int i = 1; i <= 5; ++i) {
+                cards.add(this.pick());
+            }
+
         }
-        System.out.println("Quedan " + deck.size()+ " cartas");
     }
 }
