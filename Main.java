@@ -1,49 +1,57 @@
+
+
+import java.util.InputMismatchException;
 import java.util.Scanner;
+
 public class Main {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception{
 
-        Deck mazo = new Deck();
-System.out.println("Que acción es la que quieres llevar a cabo?");
-Scanner scanner1 = new Scanner(System.in);
-if(scanner1.equals("suflle")) {
+        Deck deck= new Deck();
+        deck.construir();
+        Scanner scanner = new Scanner(System.in);
+        boolean salir = false;
+        int opciones;
+        System.out.println("Bienvenido a Poker!");
 
-     mazo.suflle();
-}else if(scanner1.equals("head")){
-    mazo.head();
-}else if(scanner1.equals("pick")){
-    mazo.pick();
-}else if(scanner1.equals("hand")){
-    mazo.hand();
-}
-Scanner scanner = new Scanner(System.in);
-System.out.println("Please, enter an Integer:");
-        System.out.println("Your Integer was: " + scanner.nextInt());
-
-        System.out.println("Please, enter a Double:");
-        System.out.println("Your Double was: " + scanner.nextDouble());
-
-        System.out.println("Please, enter a Boolean:");
-        System.out.println("Your Boolean was: " + scanner.nextBoolean());
-
-        System.out.println("Please, enter a String:");
-        System.out.println("Your String was: " + scanner.next());
-        System.out.println(scanner.next());
-
-        System.out.println("Deck de Cartas para Iniciar: " + mazo.getSize());
-
-        for (Card elemento : mazo.getDeck()) {
-            System.out.print(elemento + " / ");
+        while (!salir){
+            System.out.println("Opciones a elegir:");
+            System.out.println("1 Mezclar deck");
+            System.out.println("2 Sacar una carta");
+            System.out.println("3 Carta al azar");
+            System.out.println("4 Generar una mano de 5 cartas");
+            System.out.println("0 Salir");
+            try {
+                System.out.println("Selecciona una opción:");
+                opciones = scanner.nextInt();
+                switch (opciones){
+                    case 1:
+                        deck.barajear();
+                        break;
+                    case 2:
+                        deck.head();
+                        break;
+                    case 3:
+                        deck.pick();
+                        break;
+                    case 4:
+                        deck.hand();
+                        break;
+                    case 0:
+                        salir = true;
+                        System.out.println("Se acabo el juego");
+                        break;
+                    default:
+                        throw new IllegalStateException("opción no valida " + opciones);
+                }
+            }
+            catch (InputMismatchException e){
+                System.out.println("Opción no válida");
+                scanner.next();
+            }
+            catch (Exception a){
+                a.printStackTrace();
+            }
         }
-        System.out.println("\n");
-        mazo.suflle();
-        System.out.println("\n");
-        mazo.head();
-        System.out.println("\n");
-        mazo.pick();
-        System.out.println("\n");
-        mazo.hand();
-
     }
-
 }
